@@ -3,14 +3,12 @@ package com.github.incu6us.thrift.logger;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.*;
 
-import java.nio.ByteBuffer;
-
 
 class ServerInProtocolDecorator extends TProtocolDecorator {
 
     private final TProtocol protocol;
     private final TMessage message;
-    private final Logger logger;
+    private final Interceptor interceptor;
 
     private StringBuilder builder = new StringBuilder();
 
@@ -19,12 +17,12 @@ class ServerInProtocolDecorator extends TProtocolDecorator {
      *
      * @param protocol All operations will be forward to this protocol.  Must be non-null.
      */
-    public ServerInProtocolDecorator(final TProtocol protocol, final TMessage message, final Logger logger) {
+    public ServerInProtocolDecorator(final TProtocol protocol, final TMessage message, final Interceptor interceptor) {
         super(protocol);
 
         this.protocol = protocol;
         this.message = message;
-        this.logger = logger;
+        this.interceptor = interceptor;
     }
 
 
@@ -36,7 +34,7 @@ class ServerInProtocolDecorator extends TProtocolDecorator {
 
     @Override
     public void readMessageEnd() throws TException {
-        logger.clientRequest(builder.append("}"));
+        interceptor.clientRequest(builder.append("}"));
         super.readMessageEnd();
     }
 

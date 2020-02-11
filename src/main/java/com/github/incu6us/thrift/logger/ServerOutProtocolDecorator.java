@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 @Slf4j
 public class ServerOutProtocolDecorator extends TProtocolDecorator {
 
-    private final Logger logger;
+    private final Interceptor interceptor;
 
     private StringBuilder builder = new StringBuilder();
 
@@ -18,10 +18,10 @@ public class ServerOutProtocolDecorator extends TProtocolDecorator {
      *
      * @param protocol All operations will be forward to this protocol.  Must be non-null.
      */
-    public ServerOutProtocolDecorator(final TProtocol protocol, final Logger logger) {
+    public ServerOutProtocolDecorator(final TProtocol protocol, final Interceptor interceptor) {
         super(protocol);
 
-        this.logger = logger;
+        this.interceptor = interceptor;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ServerOutProtocolDecorator extends TProtocolDecorator {
 
     @Override
     public void writeMessageEnd() throws TException {
-        logger.serverResponse(builder.append("}"));
+        interceptor.serverResponse(builder.append("}"));
         super.writeMessageEnd();
     }
 

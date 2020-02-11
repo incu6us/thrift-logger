@@ -20,7 +20,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-class LogProcessorTest {
+class InterceptorProcessorTest {
 
     private TServer server;
     private static final String host = "localhost";
@@ -57,7 +57,7 @@ class LogProcessorTest {
     private void startServer() throws TTransportException {
         final TProcessor processor = new UglyService.Processor<>(new UglyServiceImpl());
         final TServerTransport transport = new TServerSocket(port);
-        server = new TSimpleServer(new TServer.Args(transport).processor(new LogProcessor(processor, new ServerLogger())));
+        server = new TSimpleServer(new TServer.Args(transport).processor(new InterceptorProcessor(processor, new ServerInterceptor())));
 
         new Thread(() -> server.serve()).start();
     }
