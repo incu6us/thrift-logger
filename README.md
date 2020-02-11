@@ -1,6 +1,9 @@
 log-processor
 ---
 
+<a href="https://github.com/incu6us/thrift-logger"><img alt="ci status" src="https://github.com/incu6us/thrift-logger/workflows/maven/badge.svg"></a>
+
+
 Logger for Thrift Server
 
 # Usage:
