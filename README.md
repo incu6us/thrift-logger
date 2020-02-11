@@ -1,10 +1,36 @@
 log-processor
 ---
 
+Logger for Thrift Server
+
+# Usage:
+```java
+            ...
+            final TProcessor processor = new UglyService.Processor<>(new UglyServiceImpl());
+            final TServerTransport transport = new TServerSocket(port);
+            server = new TSimpleServer(new TServer.Args(transport).processor(new LogProcessor(processor, new ServerTestLogger())));
+
+            new Thread(() -> server.serve()).start();
+        }
+    
+        @Slf4j
+        public class ServerTestLogger<T> implements Logger<T> {
+        
+            @Override
+            public void serverResponse(final T field) {
+                log.info("Server Field: {}", field);
+            }
+        
+            @Override
+            public void clientRequest(final T field) {
+                log.info("Client Field: {}", field);
+            }
+        }
+```
+
 ### Output 
 ```
-30 [Thread-0] INFO com.github.incu6us.thrift.logger.ServerInterceptor - Client Field: {doSomething: 1: 2: some name}
-34 [Thread-0] INFO com.github.incu6us.thrift.logger.ServerInterceptor - Server Field: {doSomething: {doSomething_result: {success: {Result: {isSuccess: true}{data: Success}{nested: {NestedResult: {netedData: Nested Data}}}}}}}
-34 [Thread-0] INFO com.github.incu6us.thrift.logger.ServerInterceptor - ts: 12ms.
-34 [main] INFO com.github.incu6us.thrift.logger.InterceptorProcessorTest - Result: Result(isSuccess:true, data:Success, nested:NestedResult(netedData:Nested Data))
+30 [Thread-0] INFO com.github.incu6us.thrift.logger.LoggerProcessorTest$ServerTestLogger - Client Field: {doSomething: 1: 2: some name}
+37 [Thread-0] INFO com.github.incu6us.thrift.logger.LoggerProcessorTest$ServerTestLogger - Server Field: {doSomething: {doSomething_result: {success: {Result: {isSuccess: true}{data: Success}{nested: {NestedResult: {netedData: Nested Data}}}}}}}
+38 [main] INFO com.github.incu6us.thrift.logger.LoggerProcessorTest - Result: Result(isSuccess:true, data:Success, nested:NestedResult(netedData:Nested Data))
 ```

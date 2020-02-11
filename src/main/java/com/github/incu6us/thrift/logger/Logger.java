@@ -1,8 +1,7 @@
 package com.github.incu6us.thrift.logger;
 
-public interface Interceptor<I, T> {
-    I inject();
-    void getInjectionResult(I value);
+public interface Logger<T> {
     void serverResponse(T field);
+
     void clientRequest(T field);
 }

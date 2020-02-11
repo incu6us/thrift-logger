@@ -8,30 +8,30 @@ import org.apache.thrift.transport.TTransportException;
 
 import java.nio.ByteBuffer;
 
-public class InterceptorProtocol extends TProtocolDecorator {
+public class LogProtocol extends TProtocolDecorator {
 
-    private final Interceptor interceptor;
+    private final Logger logger;
 
     /**
      * Encloses the specified protocol.
      *
      * @param protocol All operations will be forward to this protocol.  Must be non-null.
      */
-    public InterceptorProtocol(final TProtocol protocol, final Interceptor interceptor) {
+    public LogProtocol(final TProtocol protocol, final Logger logger) {
         super(protocol);
 
-        this.interceptor = interceptor;
+        this.logger = logger;
     }
 
     @Override
     public TMessage readMessageBegin() throws TException {
         try {
             final TMessage message = super.readMessageBegin();
-            interceptor.serverResponse(message);
+            logger.serverResponse(message);
 
             return message;
         } catch (final TTransportException e) {
-            interceptor.serverResponse(e);
+            logger.serverResponse(e);
 
             throw e;
         }

@@ -1,15 +1,13 @@
 package com.github.incu6us.thrift.logger;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.*;
 
 import java.nio.ByteBuffer;
 
-@Slf4j
 public class ServerOutProtocolDecorator extends TProtocolDecorator {
 
-    private final Interceptor interceptor;
+    private final Logger logger;
 
     private StringBuilder builder = new StringBuilder();
 
@@ -18,10 +16,10 @@ public class ServerOutProtocolDecorator extends TProtocolDecorator {
      *
      * @param protocol All operations will be forward to this protocol.  Must be non-null.
      */
-    public ServerOutProtocolDecorator(final TProtocol protocol, final Interceptor interceptor) {
+    public ServerOutProtocolDecorator(final TProtocol protocol, final Logger logger) {
         super(protocol);
 
-        this.interceptor = interceptor;
+        this.logger = logger;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class ServerOutProtocolDecorator extends TProtocolDecorator {
 
     @Override
     public void writeMessageEnd() throws TException {
-        interceptor.serverResponse(builder.append("}"));
+        logger.serverResponse(builder.append("}").toString());
         super.writeMessageEnd();
     }
 

@@ -20,7 +20,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-class InterceptorProcessorTest {
+class LoggerProcessorTest {
 
     private TServer server;
     private static final String host = "localhost";
@@ -38,7 +38,6 @@ class InterceptorProcessorTest {
 
     @Test
     void process() throws TException {
-
         final TTransport transport = new TSocket("localhost", port);
         transport.open();
 
@@ -57,7 +56,7 @@ class InterceptorProcessorTest {
     private void startServer() throws TTransportException {
         final TProcessor processor = new UglyService.Processor<>(new UglyServiceImpl());
         final TServerTransport transport = new TServerSocket(port);
-        server = new TSimpleServer(new TServer.Args(transport).processor(new InterceptorProcessor(processor, new ServerInterceptor())));
+        server = new TSimpleServer(new TServer.Args(transport).processor(new LogProcessor(processor, new ServerTestLogger())));
 
         new Thread(() -> server.serve()).start();
     }
@@ -68,4 +67,21 @@ class InterceptorProcessorTest {
         }
     }
 
+    @Slf4j
+    private static class ServerTestLogger<T> implements Logger<T> {
+
+        @Override
+        public void serverResponse(final T field) {
+            log.info("Server Field: {}", field);
+            final String expected = "{doSomething: {doSomething_result: {success: {Result: {isSuccess: true}{data: Success}{nested: {NestedResult: {netedData: Nested Data}}}}}}}";
+            assertEquals(expected, field);
+        }
+
+        @Override
+        public void clientRequest(final T field) {
+            log.info("Client Field: {}", field);
+            final String expected = "{doSomething: 1: 2: some name}";
+            assertEquals(expected, field);
+        }
+    }
 }
