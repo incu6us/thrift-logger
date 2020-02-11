@@ -6,7 +6,18 @@ log-processor
 
 Logger for Thrift Server
 
-# Usage:
+
+### Dependency
+```xml
+        <dependency>
+            <groupId>com.github.incu6us.thrift</groupId>
+            <artifactId>thrift-logger</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+```
+
+
+### Usage:
 ```java
             ...
             final TProcessor processor = new UglyService.Processor<>(new UglyServiceImpl());
@@ -30,6 +41,7 @@ Logger for Thrift Server
             }
         }
 ```
+
 
 ### Output 
 ```

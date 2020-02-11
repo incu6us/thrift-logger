@@ -4,7 +4,9 @@
 
     <groupId>com.github.incu6us.thrift</groupId>
     <artifactId>thrift-logger</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>thrift-logger</name>
+    <description>Thrift logger decorator to log in/out messages</description>
     <packaging>jar</packaging>
 
     <properties>
